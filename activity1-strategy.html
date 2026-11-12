@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity 1 · Strategic Optimization Plan · WarehouseX</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>Activity 1 · Strategic Optimization Plan</h1>
+        <div>
+          <span class="badge badge-primary">Deliverable S1</span>
+          <span class="badge badge-m">[M] Scaffolded</span>
+        </div>
+      </div>
+      <p class="subtitle">Systematic engineering framework, metrics baselines, and multi-phase optimization roadmap</p>
+    </header>
+
+    <nav class="nav-bar" aria-label="Main Navigation">
+      <a href="index.html" class="nav-link">Hub Overview</a>
+      <a href="activity1-strategy.html" class="nav-link active">Activity 1 · Strategic Plan</a>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 2">Activity 2 · SQL Query</span>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 3">Activity 3 · Application Code</span>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 4">Activity 4 · Debugging & Resilience</span>
+    </nav>
+
+    <main class="tabs-container">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab-issues" role="tab">1. Issues & Scope</button>
+        <button class="tab-btn" data-tab="tab-framework" role="tab">2. Framework (P1–P4)</button>
+        <button class="tab-btn" data-tab="tab-requirements" role="tab">3. Requirements Matrix (15)</button>
+        <button class="tab-btn" data-tab="tab-synthesis" role="tab">4. Synthesis (Z1–Z3)</button>
+      </div>
+
+      <!-- Tab 1: Issues & Scope -->
+      <div id="tab-issues" class="tab-pane active" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Problem Formulation & Core Issues</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Warehouse X's order management architecture experiences escalating latency, resource saturation, and system instability under increasing transaction volumes. The strategic plan defines solutions for four primary root issues:
+          </p>
+          <div class="card-grid">
+            <div class="card" style="background-color: #f8fafc;">
+              <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Issue I1</span>
+              <h3>Database Bottlenecks</h3>
+              <p>Relational queries retrieving order line items and product catalog details execute full-table scans with high read/write lock contention.</p>
+            </div>
+            <div class="card" style="background-color: #f8fafc;">
+              <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Issue I2</span>
+              <h3>Application Inefficiencies</h3>
+              <p>Redundant database round-trips within loops ($N+1$ query pattern) and unoptimized I/O logic drastically slow order throughput.</p>
+            </div>
+            <div class="card" style="background-color: #f8fafc;">
+              <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Issue I3</span>
+              <h3>Unhandled Runtime Errors</h3>
+              <p>Missing input validation and unhandled edge cases (null references, missing products, stock depletion) trigger process crashes.</p>
+            </div>
+            <div class="card" style="background-color: #f8fafc;">
+              <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Issue I4</span>
+              <h3>Monitoring Deficits</h3>
+              <p>Lack of systematic performance metrics, execution plan regression gates, and proactive monitoring leads to recurring bottlenecks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Framework P1-P4 -->
+      <div id="tab-framework" class="tab-pane" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Structured Engineering Lifecycle (P1–P4)</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Phase Name</th>
+                <th>Operational Focus</th>
+                <th>Deliverable Artifact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>P1</strong></td>
+                <td>Define Project Scope</td>
+                <td>Isolate optimization strictly to order fulfillment, catalog resolution, and stock deduction.</td>
+                <td>Scope Definition & Operational Boundaries</td>
+              </tr>
+              <tr>
+                <td><strong>P2</strong></td>
+                <td>Set Performance Metrics</td>
+                <td>Establish quantifiable benchmark targets per focus area (query speed, batch queries, crash count).</td>
+                <td>Evidence Ledger Baseline Table</td>
+              </tr>
+              <tr>
+                <td><strong>P3</strong></td>
+                <td>Select AI Environment</td>
+                <td>Leverage the AI assistant for execution plan analysis, code refactoring, and guard clause formulation.</td>
+                <td>AI Assistance Protocol Record</td>
+              </tr>
+              <tr>
+                <td><strong>P4</strong></td>
+                <td>Phased Work Plan</td>
+                <td>Follow three-stage discipline: Analysis (measure baseline) &rarr; Optimization (isolate change) &rarr; Testing (benchmark check).</td>
+                <td>Automated NUnit Equivalence Fixtures</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 3: Requirements Matrix -->
+      <div id="tab-requirements" class="tab-pane" role="tabpanel">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 style="font-size: 1.25rem;">15 Core Course Requirements Crosswalk</h2>
+            <div class="filter-bar">
+              <button class="filter-btn active" data-filter="all">All (15)</button>
+              <button class="filter-btn" data-filter="SQL">SQL (4)</button>
+              <button class="filter-btn" data-filter="APP">App (4)</button>
+              <button class="filter-btn" data-filter="DBG">Debug (4)</button>
+              <button class="filter-btn" data-filter="LT">Long-Term (3)</button>
+            </div>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Category</th>
+                <th>Requirement Specification</th>
+                <th>Strategy Implementation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="filterable-item" data-category="SQL">
+                <td><code>R-SQL-1</code></td>
+                <td>SQL</td>
+                <td>Identify query speed strategies</td>
+                <td>B-tree index creation, table scan elimination, projection minimization.</td>
+              </tr>
+              <tr class="filterable-item" data-category="SQL">
+                <td><code>R-SQL-2</code></td>
+                <td>SQL</td>
+                <td>Suggest optimization for delayed queries</td>
+                <td>Composite indexing on <code>Products(Category, ProductID)</code> for fast filtered joins.</td>
+              </tr>
+              <tr class="filterable-item" data-category="SQL">
+                <td><code>R-SQL-3</code></td>
+                <td>SQL</td>
+                <td>Specify join optimization methods</td>
+                <td>Covering index on <code>Orders(ProductID, Quantity)</code> to avoid secondary table looks.</td>
+              </tr>
+              <tr class="filterable-item" data-category="SQL">
+                <td><code>R-SQL-4</code></td>
+                <td>SQL</td>
+                <td>Measure improvements with execution plans</td>
+                <td>Capture SQLite <code>EXPLAIN QUERY PLAN</code> before and after indexing.</td>
+              </tr>
+              <tr class="filterable-item" data-category="APP">
+                <td><code>R-APP-1</code></td>
+                <td>APP</td>
+                <td>Determine execution slowdown delay points</td>
+                <td>Profile repetitive database queries inside order iteration loops ($N+1$ calls).</td>
+              </tr>
+              <tr class="filterable-item" data-category="APP">
+                <td><code>R-APP-2</code></td>
+                <td>APP</td>
+                <td>Recommend logic flow enhancements</td>
+                <td>Pre-fetch product catalog into an in-memory dictionary; O(N) &rarr; O(1) complexity.</td>
+              </tr>
+              <tr class="filterable-item" data-category="APP">
+                <td><code>R-APP-3</code></td>
+                <td>APP</td>
+                <td>Propose data read/write improvements</td>
+                <td>Buffer console I/O and consolidate inventory deductions into batched transactions.</td>
+              </tr>
+              <tr class="filterable-item" data-category="APP">
+                <td><code>R-APP-4</code></td>
+                <td>APP</td>
+                <td>Define key performance tracking metrics</td>
+                <td>Total database calls, batch processing latency (ms), memory footprint (MB).</td>
+              </tr>
+              <tr class="filterable-item" data-category="DBG">
+                <td><code>R-DBG-1</code></td>
+                <td>DBG</td>
+                <td>Identify system crash error types</td>
+                <td>NullReferenceException on catalog misses, negative inventory states, lock contention.</td>
+              </tr>
+              <tr class="filterable-item" data-category="DBG">
+                <td><code>R-DBG-2</code></td>
+                <td>DBG</td>
+                <td>Specify error-inducing edge cases</td>
+                <td>Missing ProductIDs, requested quantity exceeding stock, zero/negative order quantities.</td>
+              </tr>
+              <tr class="filterable-item" data-category="DBG">
+                <td><code>R-DBG-3</code></td>
+                <td>DBG</td>
+                <td>Outline AI-assisted debugging strategies</td>
+                <td>Formulate defensive guard clauses and structured domain exception handling.</td>
+              </tr>
+              <tr class="filterable-item" data-category="DBG">
+                <td><code>R-DBG-4</code></td>
+                <td>DBG</td>
+                <td>Define issue resolution validation methods</td>
+                <td>Automated NUnit test fixtures executing negative boundary and edge-case assertions.</td>
+              </tr>
+              <tr class="filterable-item" data-category="LT">
+                <td><code>R-LT-1</code></td>
+                <td>LT</td>
+                <td>Document efficiency maintenance strategies</td>
+                <td>Automated database index re-indexing, vacuuming, and memory cache expiration.</td>
+              </tr>
+              <tr class="filterable-item" data-category="LT">
+                <td><code>R-LT-2</code></td>
+                <td>LT</td>
+                <td>Define future optimization checkpoints</td>
+                <td>Automated CI performance benchmarks and periodic query plan regression audits.</td>
+              </tr>
+              <tr class="filterable-item" data-category="LT">
+                <td><code>R-LT-3</code></td>
+                <td>LT</td>
+                <td>Suggest AI automation opportunities</td>
+                <td>Automated log anomaly detection and workload-driven proactive index tuning.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 4: Synthesis Z1-Z3 -->
+      <div id="tab-synthesis" class="tab-pane" role="tabpanel">
+        <div class="card-grid">
+          <div class="card">
+            <h3>Z1 · Planned Optimizations</h3>
+            <p>1. Composite indexing on <code>Products(Category, ProductID)</code> and <code>Orders(ProductID, Quantity)</code>.<br>
+            2. In-memory dictionary caching to replace sequential database queries.<br>
+            3. Defensive guard clauses and domain exceptions for nulls and stock shortages.</p>
+          </div>
+          <div class="card">
+            <h3>Z2 · the AI assistant Role</h3>
+            <p>the AI assistant assists throughout the development lifecycle by analyzing execution plans, suggesting refactored LINQ patterns, formulating defensive validation guards, and helping generate test fixtures.</p>
+          </div>
+          <div class="card">
+            <h3>Z3 · Measurement Methodology</h3>
+            <p>Programmatic capture of SQLite <code>EXPLAIN QUERY PLAN</code>, high-resolution elapsed time benchmarks over Small (~1K) and Medium (~10K) synthetic workloads, and automated NUnit assertions.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer-callout">
+      <p style="margin-bottom: 0.5rem;">
+        <strong>Activity 1 Strategic Plan Artifact</strong> · Capstone Submission Item S1 · Mapped to Rubric Criterion C1.
+      </p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary);">
+        Evidence standard: <code>[M]</code> Measured locally · <code>[SIM]</code> Simulated workload · <code>[GAP]</code> Unmeasured baseline. AI disclosure: Developed with AI assistance using the AI assistant as the AI environment.
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/warehousex.js"></script>
+</body>
+</html>

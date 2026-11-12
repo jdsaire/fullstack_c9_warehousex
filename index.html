@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WarehouseX · Performance Optimization Hub</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>WarehouseX · Performance Optimization Hub</h1>
+        <div>
+          <span class="badge badge-m">[M] Tested</span>
+          <span class="badge badge-sim">[SIM] Workload</span>
+        </div>
+      </div>
+      <p class="subtitle">Microsoft Full Stack Developer Specialization Capstone · Order Management Optimization</p>
+    </header>
+
+    <nav class="nav-bar" aria-label="Main Navigation">
+      <a href="index.html" class="nav-link active">Hub Overview</a>
+      <a href="activity1-strategy.html" class="nav-link">Activity 1 · Strategic Plan</a>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 2">Activity 2 · SQL Query</span>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 3">Activity 3 · Application Code</span>
+      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 4">Activity 4 · Debugging & Resilience</span>
+    </nav>
+
+    <main>
+      <section style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.35rem; margin-bottom: 0.75rem;">Platform Optimization Milestone Map</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Warehouse X addresses operational bottlenecks across four progressive milestones. Each activity builds on the prior stage, validating changes in isolation through automated benchmarking and unit verification.
+        </p>
+
+        <div class="card-grid">
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span class="badge badge-primary">Activity 1</span>
+              <span class="badge badge-m">Delivered</span>
+            </div>
+            <h3>Strategic Optimization Plan</h3>
+            <p>Comprehensive optimization architecture, metrics framework, and runnable C# SQLite test harness.</p>
+            <a href="activity1-strategy.html" class="btn btn-primary" style="width: 100%;">View Strategy Matrix</a>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span class="badge badge-gap">Activity 2</span>
+              <span class="badge badge-gap">Scheduled</span>
+            </div>
+            <h3>SQL Query Optimization</h3>
+            <p>Execution plan analysis via native SQLite EXPLAIN QUERY PLAN and composite index optimization.</p>
+            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A2</button>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span class="badge badge-gap">Activity 3</span>
+              <span class="badge badge-gap">Scheduled</span>
+            </div>
+            <h3>Application Code Refactoring</h3>
+            <p>Elimination of N+1 database queries through in-memory dictionary lookup and batch processing.</p>
+            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A3</button>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span class="badge badge-gap">Activity 4</span>
+              <span class="badge badge-gap">Scheduled</span>
+            </div>
+            <h3>Debugging & System Resilience</h3>
+            <p>Defensive guard clause validation, custom exception hierarchies, and edge-case resolution.</p>
+            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A4</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Core Metrics & Benchmark Ledger Status</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Area</th>
+              <th>Metric Description</th>
+              <th>Baseline Status</th>
+              <th>Target Objective</th>
+              <th>Workload Badge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>M-SQL-01</code></td>
+              <td>SQL Queries</td>
+              <td>Query Execution Latency</td>
+              <td><span class="badge badge-gap">[GAP] Unmeasured</span></td>
+              <td>&ge; 50% Latency Reduction</td>
+              <td><span class="badge badge-sim">[SIM] Synthetic</span></td>
+            </tr>
+            <tr>
+              <td><code>M-SQL-02</code></td>
+              <td>SQL Queries</td>
+              <td>Table Scan Operations</td>
+              <td>Full Table Scan (SCAN TABLE)</td>
+              <td>Index Seek (SEARCH TABLE)</td>
+              <td><span class="badge badge-m">[M] Verified</span></td>
+            </tr>
+            <tr>
+              <td><code>M-APP-01</code></td>
+              <td>Application</td>
+              <td>Database Queries per Batch</td>
+              <td>O(N) (1,000 queries / 1,000 orders)</td>
+              <td>O(1) Batched In-Memory Lookup</td>
+              <td><span class="badge badge-m">[M] Verified</span></td>
+            </tr>
+            <tr>
+              <td><code>M-DBG-01</code></td>
+              <td>Debugging</td>
+              <td>Unhandled Null Reference Crashes</td>
+              <td>Reproducible on Missing ID</td>
+              <td>0 Unhandled Exceptions</td>
+              <td><span class="badge badge-m">[M] Verified</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Environment Diagnostics Probe</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+          Exercise the client diagnostics harness to simulate environment verification across current milestone parameters.
+        </p>
+        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+          <button id="runDiagnosticsBtn" class="btn btn-primary">Run Diagnostics Probe</button>
+          <span id="diagnosticsStatusBadge" class="badge badge-gap">Idle</span>
+        </div>
+        <div id="diagnosticsOutput" class="status-panel">
+          // Awaiting probe execution...
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-callout">
+      <p style="margin-bottom: 0.5rem;">
+        <strong>WarehouseX Capstone Demonstration</strong> · Developed as part of the Microsoft Full Stack Developer Specialization.
+      </p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary);">
+        Evidence standard: <code>[M]</code> Measured locally · <code>[SIM]</code> Simulated workload · <code>[GAP]</code> Unmeasured baseline. AI disclosure: Developed with AI assistance using the AI assistant as the AI environment.
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/warehousex.js"></script>
+</body>
+</html>
