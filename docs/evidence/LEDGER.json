@@ -146,13 +146,42 @@
         "basis": "Defensive guard clause checking product != null before property access"
       },
       "result": {
-        "value": null,
-        "badge": "GAP",
-        "workload": null,
-        "method": null,
-        "environment": null,
-        "date": null,
-        "raw_output_ref": null
+        "value": "0 unhandled process crashes across 1,000 heterogeneous orders (-100% crash rate)",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrdersBatchResilient on 1,000 synthetic orders (850 valid, 75 missing products, 50 overdrafts, 25 invalid quantities)",
+        "environment": "Debian 12 .NET 8 / SQLite 3.40.1 in-memory",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.ResilienceAndDebuggingTests.ProcessOrdersBatchResilient_EliminatesProcessCrashes_AcrossHighVolumeHeterogeneousWorkload"
+      }
+    },
+    {
+      "metric_id": "M-DBG-02",
+      "focus_area": "F4",
+      "name": "Edge-Case Boundary Validation Coverage",
+      "unit": "verified failure modes",
+      "baseline": {
+        "value": "0 boundary checks (negative stock allowed, unvalidated quantities)",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrderUnoptimized without stock and quantity guards",
+        "environment": "Debian 12 .NET 8 / SQLite",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.ResilienceAndDebuggingTests.Baseline_ProcessOrderUnoptimized_AllowsNegativeStock_OnOverdraft"
+      },
+      "target": {
+        "value": "100% boundary guard coverage (null payload, quantity <= 0, missing ID, stock overdraft)",
+        "set_on": "2026-11-11",
+        "basis": "Defensive guard clauses with typed domain exceptions"
+      },
+      "result": {
+        "value": "100% guard coverage (4/4 edge modes verified in NUnit, 0 negative stock allowed)",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrderDebugged and TryProcessOrder NUnit test suite (15/15 tests passing)",
+        "environment": "Debian 12 .NET 8 / SQLite 3.40.1 in-memory",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.ResilienceAndDebuggingTests"
       }
     }
   ]
