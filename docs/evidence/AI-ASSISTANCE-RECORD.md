@@ -1,0 +1,31 @@
+# AI Assistance Chronological Record · Warehouse X
+
+**System**: Warehouse X Logistics & Order Management Platform  
+**Author**: Juan Diego S. (`jdsaire`)  
+**Scope**: Course 9 Capstone Activities 1–4  
+**Feeds**: Submission Item S5 (Prompt P6 · Rubric Criterion C5)  
+
+---
+
+## Record Schema
+Each entry documents an interaction with the AI environment during development, capturing what was requested, what was suggested, what was accepted or modified, and the resulting artifact.
+
+---
+
+## Chronological Development Log
+
+### Entry AI-01 · Activity 1: Strategic Optimization Plan
+- **Date**: 2026-11-11
+- **Activity**: Activity 1 · Strategic Optimization Plan
+- **Inquiry / Prompt**: Requested assistance in structuring a multi-phase optimization framework (P1–P4) and mapping out strategies across the 15 rubric requirements (SQL query speed, loop bottlenecks, runtime crash resilience, and long-term telemetry).
+- **Assistance Provided**: The AI environment proposed organizing the plan around the four course problem areas (I1–I4), recommended establishing quantifiable performance metric baselines with unmeasured values badged `[GAP]`, and suggested scaffolding a minimal C# SQLite harness.
+- **Evaluation & Action**: Accepted the four-phase structure and 15-requirement breakdown. Modified the framework to strictly badge all synthetic data workloads as `SIMULATED-WORKLOAD` and ensure all baseline metrics remain `[GAP]` until measured.
+- **Resulting Artifacts**: `docs/STRATEGIC-PLAN.md`, `docs/reports/ACTIVITY-1-COMPLETION-REPORT.md`, `activity1-strategy.html`.
+
+### Entry AI-02 · Activity 1: Minimal Runnable Scaffold Architecture
+- **Date**: 2026-11-11
+- **Activity**: Activity 1 · Runnable Scaffold Architecture
+- **Inquiry / Prompt**: Requested architectural review for the minimal C# .NET 8 test harness to run the course snippets verbatim without modifying the course code.
+- **Assistance Provided**: The AI environment recommended creating domain models `Order` and `Product` with explicit property-to-column mappings to bridge the naming discrepancy between SQL (`ProductID`, `ProductName`) and C# (`Id`, `Name`, `Stock`), and implementing `WarehouseDbContext.Products` with `Find(id)` and `FirstOrDefault(predicate)` accessors.
+- **Evaluation & Action**: Accepted the recommendation in full. Implemented `WarehouseDbContext.cs` and verified that both baseline snippets compile and execute verbatim against in-memory SQLite.
+- **Resulting Artifacts**: `src/WarehouseX/`, `tests/WarehouseX.Tests/`.

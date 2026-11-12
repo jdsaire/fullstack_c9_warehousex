@@ -1,0 +1,130 @@
+{
+  "system": "WarehouseX Order Management Platform",
+  "author": "jdsaire",
+  "created_at": "2026-11-11",
+  "version": "1.0.0",
+  "badges_policy": {
+    "MEASURED": "Run locally with method, environment, date, and raw output recorded.",
+    "SIMULATED": "Synthetic workload or model estimation. A measured run on generated data carries both MEASURED and SIMULATED-WORKLOAD.",
+    "COURSE-EXAMPLE": "Illustrative course video figure. Never a result.",
+    "GAP": "Unmeasured baseline or target awaiting benchmark execution."
+  },
+  "entries": [
+    {
+      "metric_id": "M-SQL-01",
+      "focus_area": "F2",
+      "name": "Query Execution Latency",
+      "unit": "milliseconds (ms)",
+      "baseline": {
+        "value": null,
+        "badge": "GAP",
+        "workload": "GAP",
+        "method": null,
+        "environment": null,
+        "date": null,
+        "raw_output_ref": null
+      },
+      "target": {
+        "value": ">= 50% reduction",
+        "set_on": "2026-11-11",
+        "basis": "B-tree index scan replacing table scan on Products and Orders"
+      },
+      "result": {
+        "value": null,
+        "badge": "GAP",
+        "workload": null,
+        "method": null,
+        "environment": null,
+        "date": null,
+        "raw_output_ref": null
+      }
+    },
+    {
+      "metric_id": "M-SQL-02",
+      "focus_area": "F2",
+      "name": "Query Plan Table Scan Operations",
+      "unit": "plan nodes",
+      "baseline": {
+        "value": "SCAN Orders; SEARCH Products (rowid); Temp B-Tree GROUP BY; Temp B-Tree ORDER BY",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "EXPLAIN QUERY PLAN in SQLite 3.40.1",
+        "environment": "Debian 12 .NET 8 / SQLite",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ExplainQueryPlan_OutputsPlannerExecutionNodes"
+      },
+      "target": {
+        "value": "SEARCH Orders USING INDEX; SEARCH Products USING INDEX; elimination of temp b-trees",
+        "set_on": "2026-11-11",
+        "basis": "Composite covering indexes idx_products_category and idx_orders_product_qty"
+      },
+      "result": {
+        "value": null,
+        "badge": "GAP",
+        "workload": null,
+        "method": null,
+        "environment": null,
+        "date": null,
+        "raw_output_ref": null
+      }
+    },
+    {
+      "metric_id": "M-APP-01",
+      "focus_area": "F3",
+      "name": "Database Queries Dispatched per Order Batch",
+      "unit": "queries / batch",
+      "baseline": {
+        "value": 1000,
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "WarehouseDbContext.QueryCounter on unoptimized loop with 1,000 orders",
+        "environment": "Debian 12 .NET 8 / SQLite",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ProcessOrdersLoopUnoptimized_ExecutesVerbatimActivity3Logic"
+      },
+      "target": {
+        "value": 1,
+        "set_on": "2026-11-11",
+        "basis": "Pre-fetching catalog into in-memory dictionary; O(N) to O(1) query complexity"
+      },
+      "result": {
+        "value": null,
+        "badge": "GAP",
+        "workload": null,
+        "method": null,
+        "environment": null,
+        "date": null,
+        "raw_output_ref": null
+      }
+    },
+    {
+      "metric_id": "M-DBG-01",
+      "focus_area": "F4",
+      "name": "Unhandled Process Crashes on Missing Product ID",
+      "unit": "unhandled exceptions",
+      "baseline": {
+        "value": "NullReferenceException thrown on ProductID=9999",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrderUnoptimized without null guard",
+        "environment": "Debian 12 .NET 8 / SQLite",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ProcessOrderUnoptimized_ThrowsNullReferenceException_OnMissingProduct"
+      },
+      "target": {
+        "value": "0 unhandled crashes (graceful validation exception or error result)",
+        "set_on": "2026-11-11",
+        "basis": "Defensive guard clause checking product != null before property access"
+      },
+      "result": {
+        "value": null,
+        "badge": "GAP",
+        "workload": null,
+        "method": null,
+        "environment": null,
+        "date": null,
+        "raw_output_ref": null
+      }
+    }
+  ]
+}
