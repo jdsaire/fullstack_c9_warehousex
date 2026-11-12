@@ -79,8 +79,9 @@ public class TypeMappingAndQueryTests
     }
 
     [Test]
-    public void ExplainQueryPlan_OutputsPlannerExecutionNodes()
+    public void ExplainQueryPlan_BaselineWithoutIndexes_ReflectsTableScan()
     {
+        _db.DropIndexes();
         string query = @"
             SELECT p.ProductName, SUM(o.Quantity) AS TotalSold
             FROM Orders o
@@ -93,9 +94,73 @@ public class TypeMappingAndQueryTests
         var planNodes = _db.ExplainQueryPlan(query);
 
         Assert.That(planNodes, Is.Not.Empty);
-        // Under unindexed SQLite, baseline plan performs table scans
-        bool containsScan = planNodes.Any(node => node.Contains("SCAN"));
-        Assert.That(containsScan, Is.True, "Baseline plan should reflect unindexed table scan");
+        // Under unindexed SQLite, baseline plan performs table scan on Orders
+        bool containsScan = planNodes.Any(node => node.Contains("SCAN o") || node.Contains("SCAN Orders"));
+        Assert.That(containsScan, Is.True, "Baseline plan must reflect unindexed table scan");
+    }
+
+    [Test]
+    public void ExplainQueryPlan_OptimizedQueryWithCoveringIndexes_UsesCoveringIndexes()
+    {
+        _db.CreateIndexes();
+        string query = @"
+            SELECT p.ProductName, SUM(o.Quantity) AS TotalSold
+            FROM Products p
+            JOIN Orders o ON p.ProductID = o.ProductID
+            WHERE p.Category = 'Electronics'
+            GROUP BY p.ProductID, p.ProductName
+            ORDER BY TotalSold DESC;
+        ";
+
+        var planNodes = _db.ExplainQueryPlan(query);
+
+        Assert.That(planNodes, Is.Not.Empty);
+        bool usesProductIndex = planNodes.Any(node => node.Contains("idx_products_category_covering"));
+        bool usesOrderIndex = planNodes.Any(node => node.Contains("idx_orders_product_qty"));
+        bool hasTableScan = planNodes.Any(node => node.StartsWith("SCAN "));
+
+        Assert.That(usesProductIndex, Is.True, "Optimized plan must seek via idx_products_category_covering");
+        Assert.That(usesOrderIndex, Is.True, "Optimized plan must seek via idx_orders_product_qty");
+        Assert.That(hasTableScan, Is.False, "Optimized plan must eliminate unindexed table scans");
+    }
+
+    [Test]
+    public void ExecuteOptimizedSalesSummaryQuery_ReturnsIdenticalResultsToBaseline()
+    {
+        _db.CreateIndexes();
+        var baselineResults = OrderService.ExecuteSalesSummaryQuery(_db);
+        var optimizedResults = OrderService.ExecuteOptimizedSalesSummaryQuery(_db);
+
+        Assert.That(optimizedResults, Is.Not.Null);
+        Assert.That(optimizedResults.Count, Is.EqualTo(baselineResults.Count), "Row counts must match exactly");
+        Assert.That(optimizedResults.Count, Is.GreaterThan(0));
+
+        // Verify dictionary / multi-set equivalence across all products
+        var baseDict = baselineResults.ToDictionary(r => r.ProductName, r => r.TotalSold);
+        var optDict = optimizedResults.ToDictionary(r => r.ProductName, r => r.TotalSold);
+        Assert.That(optDict, Is.EqualTo(baseDict), "Aggregated sales quantities must match exactly per product");
+
+        // Verify monotonic descending sort on TotalSold in optimized results
+        for (int i = 0; i < optimizedResults.Count - 1; i++)
+        {
+            Assert.That(optimizedResults[i].TotalSold, Is.GreaterThanOrEqualTo(optimizedResults[i + 1].TotalSold),
+                $"Optimized output must remain sorted descending at index {i}");
+        }
+    }
+
+    [Test]
+    public void BenchmarkQueries_AchievesSignificantLatencyReduction()
+    {
+        using var largeDb = new WarehouseDbContext("Data Source=:memory:");
+        largeDb.SeedData(productCount: 500, orderCount: 5000, randomSeed: 777);
+        largeDb.CreateIndexes();
+
+        var (baselineMs, optMs, reduction) = OrderService.BenchmarkQueries(largeDb, iterations: 25);
+
+        Assert.That(baselineMs, Is.GreaterThan(0));
+        Assert.That(optMs, Is.GreaterThan(0));
+        Assert.That(optMs, Is.LessThan(baselineMs), "Optimized query latency must be lower than baseline");
+        Assert.That(reduction, Is.GreaterThanOrEqualTo(15.0), "Latency reduction must show substantial improvement");
     }
 
     [Test]

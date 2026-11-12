@@ -70,9 +70,17 @@ public class OrderService
 
     /// <summary>
     /// Executes a benchmark comparison between the baseline and optimized queries.
+    /// Includes warmup iterations to eliminate JIT compilation overhead.
     /// </summary>
     public static (double BaselineMs, double OptimizedMs, double ReductionPercent) BenchmarkQueries(WarehouseDbContext db, int iterations = 50)
     {
+        // Warmup JIT and database context
+        for (int w = 0; w < 5; w++)
+        {
+            ExecuteSalesSummaryQuery(db);
+            ExecuteOptimizedSalesSummaryQuery(db);
+        }
+
         var sw = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < iterations; i++)
         {
