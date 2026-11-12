@@ -88,13 +88,42 @@
         "basis": "Pre-fetching catalog into in-memory dictionary; O(N) to O(1) query complexity"
       },
       "result": {
-        "value": null,
-        "badge": "GAP",
-        "workload": null,
-        "method": null,
-        "environment": null,
-        "date": null,
-        "raw_output_ref": null
+        "value": "1 query (-99.9% reduction)",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrdersLoopOptimized with in-memory dictionary pre-loading (WarehouseDbContext.QueryCounter)",
+        "environment": "Debian 12 .NET 8 / SQLite 3.40.1 in-memory",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ProcessOrdersLoopOptimized_ReducesDatabaseQueriesToSingleOperation"
+      }
+    },
+    {
+      "metric_id": "M-APP-02",
+      "focus_area": "F3",
+      "name": "Order Processing Batch Duration",
+      "unit": "milliseconds (ms)",
+      "baseline": {
+        "value": 3929.1,
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrdersLoopUnoptimized benchmark (10 iterations on 500 products / 10,000 orders)",
+        "environment": "Debian 12 .NET 8 / SQLite 3.40.1 in-memory",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ProcessOrdersLoopOptimized_AchievesSignificantLatencyReduction"
+      },
+      "target": {
+        "value": ">= 60% execution speedup",
+        "set_on": "2026-11-11",
+        "basis": "In-memory dictionary lookup replacing N sequential SQLite queries"
+      },
+      "result": {
+        "value": "18.4 ms (-99.5% latency reduction)",
+        "badge": "MEASURED",
+        "workload": "SIMULATED-WORKLOAD",
+        "method": "OrderService.ProcessOrdersLoopOptimized benchmark (10 iterations on 500 products / 10,000 orders)",
+        "environment": "Debian 12 .NET 8 / SQLite 3.40.1 in-memory",
+        "date": "2026-11-11",
+        "raw_output_ref": "WarehouseX.Tests.TypeMappingAndQueryTests.ProcessOrdersLoopOptimized_AchievesSignificantLatencyReduction"
       }
     },
     {

@@ -122,6 +122,58 @@ public class OrderService
     }
 
     /// <summary>
+    /// Optimized order processing loop (Submission Item S3 / Criterion C3).
+    /// Pre-fetches the product catalog into an in-memory dictionary prior to iteration,
+    /// eliminating N+1 database query round-trips (O(N) -> O(1) query complexity).
+    /// </summary>
+    public static void ProcessOrdersLoopOptimized(WarehouseDbContext db, List<Order> orders, Action<string>? logAction = null)
+    {
+        var productCatalog = db.Products.AsDictionary();
+        foreach (var order in orders)
+        {
+            productCatalog.TryGetValue(order.ProductId, out var product);
+            logAction?.Invoke($"Order {order.Id}: {product?.Name} - {order.Quantity}");
+        }
+    }
+
+    /// <summary>
+    /// Benchmarks the unoptimized N+1 query loop against the dictionary-cached optimized loop.
+    /// Includes warmup runs to prevent JIT bias.
+    /// </summary>
+    public static (double BaselineMs, double OptimizedMs, double ReductionPercent, int BaselineQueries, int OptimizedQueries) BenchmarkLoopProcessing(WarehouseDbContext db, List<Order> orders, int iterations = 5)
+    {
+        // Warmup runs
+        var warmupOrders = orders.Take(Math.Min(orders.Count, 50)).ToList();
+        ProcessOrdersLoopUnoptimized(db, warmupOrders, _ => { });
+        ProcessOrdersLoopOptimized(db, warmupOrders, _ => { });
+
+        // 1. Measure Baseline
+        db.QueryCounter = 0;
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            ProcessOrdersLoopUnoptimized(db, orders, _ => { });
+        }
+        sw.Stop();
+        double baselineMs = sw.Elapsed.TotalMilliseconds / iterations;
+        int baselineQueries = db.QueryCounter / iterations;
+
+        // 2. Measure Optimized
+        db.QueryCounter = 0;
+        sw.Restart();
+        for (int i = 0; i < iterations; i++)
+        {
+            ProcessOrdersLoopOptimized(db, orders, _ => { });
+        }
+        sw.Stop();
+        double optMs = sw.Elapsed.TotalMilliseconds / iterations;
+        int optQueries = db.QueryCounter / iterations;
+
+        double reduction = baselineMs > 0 ? ((baselineMs - optMs) / baselineMs) * 100.0 : 0.0;
+        return (baselineMs, optMs, reduction, baselineQueries, optQueries);
+    }
+
+    /// <summary>
     /// Baseline order processing reproducing the non-resilient course snippet from Activity 4 Step 2.
     /// Prone to NullReferenceException and negative stock.
     /// </summary>

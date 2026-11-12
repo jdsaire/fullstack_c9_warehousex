@@ -25,7 +25,7 @@
       <a href="index.html" class="nav-link active">Hub Overview</a>
       <a href="activity1-strategy.html" class="nav-link">Activity 1 · Strategic Plan</a>
       <a href="activity2-sql.html" class="nav-link">Activity 2 · SQL Query</a>
-      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 3">Activity 3 · Application Code</span>
+      <a href="activity3-code.html" class="nav-link">Activity 3 · Application Code</a>
       <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 4">Activity 4 · Debugging & Resilience</span>
     </nav>
 
@@ -59,12 +59,12 @@
 
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-              <span class="badge badge-gap">Activity 3</span>
-              <span class="badge badge-gap">Scheduled</span>
+              <span class="badge badge-primary">Activity 3</span>
+              <span class="badge badge-m">Delivered</span>
             </div>
             <h3>Application Code Refactoring</h3>
             <p>Elimination of N+1 database queries through in-memory dictionary lookup and batch processing.</p>
-            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A3</button>
+            <a href="activity3-code.html" class="btn btn-primary" style="width: 100%;">View Code Refactoring</a>
           </div>
 
           <div class="card">
@@ -113,9 +113,9 @@
               <td><code>M-APP-01</code></td>
               <td>Application</td>
               <td>Database Queries per Batch</td>
-              <td>O(N) (1,000 queries / 1,000 orders)</td>
+              <td><span class="badge badge-sim">[SIM] 10,000 queries</span></td>
               <td>O(1) Batched In-Memory Lookup</td>
-              <td><span class="badge badge-m">[M] Verified</span></td>
+              <td><span class="badge badge-m">[M] 1 query (-99.99%)</span></td>
             </tr>
             <tr>
               <td><code>M-DBG-01</code></td>

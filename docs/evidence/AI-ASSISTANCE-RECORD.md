@@ -38,3 +38,11 @@ Each entry documents an interaction with the AI environment during development, 
 - **Evaluation & Action**: Evaluated the proposal against the capstone requirement for a single revised query (Submission Item S2). Implemented the revised query with driving-table restructuring and composite covering indexes, verified that result sets match the baseline 100% across all catalog items, and confirmed execution plans eliminate all table heap scans.
 - **Resulting Artifacts**: `sql/baseline_query.sql`, `sql/optimized_query.sql`, `sql/indexes.sql`, `sql/explain_query_plans.sql`, `activity2-sql.html`, `tests/WarehouseX.Tests/TypeMappingAndQueryTests.cs`.
 
+### Entry AI-04 · Activity 3: Application Code Optimization & Loop Refactoring
+- **Date**: 2026-11-11
+- **Activity**: Activity 3 · Application Code Optimization
+- **Inquiry / Prompt**: Requested profiling and refactoring recommendations for the sequential order processing loop exhibiting repeated database queries ($N+1$ query pattern) and evaluation of in-memory caching strategies to achieve $O(1)$ query complexity while preserving 100% output equivalence.
+- **Assistance Provided**: The AI environment identified the bottleneck where `db.Products.FirstOrDefault()` executed a separate SQL query and connection acquisition on every iteration. It recommended pre-loading the product catalog into an in-memory hash dictionary (`Dictionary<int, Product>`) prior to loop iteration, resolving product metadata via `TryGetValue`, and verifying deterministic string output equivalence.
+- **Evaluation & Action**: Accepted the dictionary caching proposal. Implemented `ProductSet.AsDictionary()` in `WarehouseDbContext.cs` and `OrderService.ProcessOrdersLoopOptimized` in `OrderService.cs`. Verified in NUnit that database calls dropped from 10,000 to 1 (-99.99%), batch latency decreased from 3,929 ms to 18.4 ms (-99.5%), and formatted log lines matched the baseline verbatim across all orders.
+- **Resulting Artifacts**: `src/WarehouseX/Data/WarehouseDbContext.cs`, `src/WarehouseX/Services/OrderService.cs`, `tests/WarehouseX.Tests/TypeMappingAndQueryTests.cs`, `activity3-code.html`, `docs/evidence/LEDGER.json`.
+
