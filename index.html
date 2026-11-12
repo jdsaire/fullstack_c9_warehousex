@@ -26,7 +26,7 @@
       <a href="activity1-strategy.html" class="nav-link">Activity 1 · Strategic Plan</a>
       <a href="activity2-sql.html" class="nav-link">Activity 2 · SQL Query</a>
       <a href="activity3-code.html" class="nav-link">Activity 3 · Application Code</a>
-      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 4">Activity 4 · Debugging & Resilience</span>
+      <a href="activity4-debug.html" class="nav-link">Activity 4 · Debugging & Resilience</a>
     </nav>
 
     <main id="main-content">
@@ -69,12 +69,12 @@
 
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-              <span class="badge badge-gap">Activity 4</span>
-              <span class="badge badge-gap">Scheduled</span>
+              <span class="badge badge-primary">Activity 4</span>
+              <span class="badge badge-m">Delivered</span>
             </div>
             <h3>Debugging & System Resilience</h3>
             <p>Defensive guard clause validation, custom exception hierarchies, and edge-case resolution.</p>
-            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A4</button>
+            <a href="activity4-debug.html" class="btn btn-primary" style="width: 100%;">View Debugging & Resilience</a>
           </div>
         </div>
       </section>
@@ -120,10 +120,18 @@
             <tr>
               <td><code>M-DBG-01</code></td>
               <td>Debugging</td>
-              <td>Unhandled Null Reference Crashes</td>
-              <td>Reproducible on Missing ID</td>
-              <td>0 Unhandled Exceptions</td>
-              <td><span class="badge badge-m">[M] Verified</span></td>
+              <td>Unhandled Process Crashes</td>
+              <td><span class="badge badge-sim">[SIM] Reproducible Crash</span></td>
+              <td>0 Unhandled Crashes</td>
+              <td><span class="badge badge-m">[M] 0 crashes (-100%)</span></td>
+            </tr>
+            <tr>
+              <td><code>M-DBG-02</code></td>
+              <td>Debugging</td>
+              <td>Negative Inventory Overdrafts</td>
+              <td><span class="badge badge-sim">[SIM] Negative Stock Allowed</span></td>
+              <td>0 Discrepancies</td>
+              <td><span class="badge badge-m">[M] 0 permitted</span></td>
             </tr>
           </tbody>
         </table>

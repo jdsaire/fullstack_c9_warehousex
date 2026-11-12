@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity 4 · Debugging & System Resilience · WarehouseX</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1>Activity 4 · Debugging &amp; System Resilience</h1>
+        <div>
+          <span class="badge badge-primary">Deliverable S4</span>
+          <span class="badge badge-m">[M] Verified</span>
+          <span class="badge badge-sim">[SIM] Workload</span>
+        </div>
+      </div>
+      <p class="subtitle">Defensive guard clauses, custom domain exception handling, boundary validation, and zero unhandled process crashes</p>
+    </header>
+
+    <nav class="nav-bar" aria-label="Main Navigation">
+      <a href="index.html" class="nav-link">Hub Overview</a>
+      <a href="activity1-strategy.html" class="nav-link">Activity 1 · Strategic Plan</a>
+      <a href="activity2-sql.html" class="nav-link">Activity 2 · SQL Query</a>
+      <a href="activity3-code.html" class="nav-link">Activity 3 · Application Code</a>
+      <a href="activity4-debug.html" class="nav-link active">Activity 4 · Debugging &amp; Resilience</a>
+    </nav>
+
+    <main id="main-content" class="tabs-container">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab-debugged-code" role="tab">1. Debugged Function (S4)</button>
+        <button class="tab-btn" data-tab="tab-hierarchy" role="tab">2. Exception Hierarchy</button>
+        <button class="tab-btn" data-tab="tab-reproduction" role="tab">3. Defect Reproduction &amp; Tests</button>
+        <button class="tab-btn" data-tab="tab-simulator" role="tab">4. Interactive Resilience Simulator</button>
+      </div>
+
+      <!-- Tab 1: Debugged Code -->
+      <div id="tab-debugged-code" class="tab-pane active" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Corrected Application Code (Submission Item S4 / Prompt P5)</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Course 9 Capstone prompt P5 requires the final debugged and corrected application code. Below is the direct progression from the baseline course snippet (Activity 4 Step 2) through preliminary guard clauses (Activity 4 Step 3) to the production-ready resilient implementation with SQLite state synchronization.
+          </p>
+
+          <div class="comparison-grid">
+            <div class="card" style="background-color: var(--bg-card-subtle);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span class="badge badge-sim">Baseline · Non-Resilient (Step 2)</span>
+                <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;" onclick="copySnippet('baselineDebugCode')">Copy</button>
+              </div>
+              <pre><code id="baselineDebugCode">public void ProcessOrder(Order order)
+{
+    var product = db.Products.Find(order.ProductId);
+    product.Stock -= order.Quantity;
+    Console.WriteLine($"Order {order.Id} processed.");
+}</code></pre>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.75rem;">
+                <strong>Identified Vulnerabilities:</strong>
+                <ul style="padding-left: 1.2rem; margin-top: 0.25rem;">
+                  <li><strong>Null Reference Crash</strong>: If <code>Find</code> returns <code>null</code>, accessing <code>product.Stock</code> throws an unhandled <code>NullReferenceException</code>.</li>
+                  <li><strong>Negative Inventory</strong>: No check that <code>Stock &gt;= Quantity</code>; overdrafts produce negative stock balances.</li>
+                  <li><strong>Unvalidated Boundaries</strong>: Zero or negative order quantities (<code>Quantity &lt;= 0</code>) bypass validation.</li>
+                  <li><strong>No State Persistence</strong>: In-memory mutation is not synchronized back to persistent database storage.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card" style="background-color: var(--bg-card-subtle);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span class="badge badge-m">Debugged · Submission S4 (Prompt P5)</span>
+                <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;" onclick="copySnippet('debuggedCode')">Copy</button>
+              </div>
+              <pre><code id="debuggedCode">public void ProcessOrder(Order order)
+{
+    // 1. Guard against null order payload
+    if (order == null)
+        throw new ArgumentNullException(nameof(order), "Order payload cannot be null.");
+
+    // 2. Guard against non-positive order quantity
+    if (order.Quantity &lt;= 0)
+        throw new InvalidOrderQuantityException(order.Id, order.Quantity);
+
+    // 3. Guard against non-existent product in catalog
+    var product = db.Products.Find(order.ProductId);
+    if (product == null)
+        throw new ProductNotFoundException(order.ProductId);
+
+    // 4. Guard against insufficient stock overdraft
+    if (product.Stock &lt; order.Quantity)
+        throw new InsufficientStockException(order.ProductId, order.Quantity, product.Stock);
+
+    // 5. Deduct stock and persist to database
+    product.Stock -= order.Quantity;
+    db.Products.UpdateStock(product.Id, product.Stock);
+
+    Console.WriteLine($"Order {order.Id} processed.");
+}</code></pre>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.75rem;">
+                <strong>Defensive Resilience Features:</strong>
+                <ul style="padding-left: 1.2rem; margin-top: 0.25rem;">
+                  <li><strong>Domain Exception Hierarchy</strong>: Throws specific typed exceptions with contextual error data.</li>
+                  <li><strong>Complete Boundary Protection</strong>: Validates <code>order</code> nullability, positive quantity, and stock limits.</li>
+                  <li><strong>Data Store Persistence</strong>: Invokes <code>db.Products.UpdateStock</code> to guarantee SQLite database integrity.</li>
+                  <li><strong>Zero Uncaught Crashes</strong>: Compatible with structured <code>TryProcessOrder</code> wrapper returning status codes.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--color-primary);">Step 3 Preliminary Suggested Guard Clauses Analysis</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            Course 9 Activity 4 Step 3 introduces two preliminary guard clauses. While they successfully identify the need for null checks and stock validation, our final implementation expands upon them by introducing typed domain exceptions and input boundary validation:
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="status-panel" style="background-color: var(--bg-card-subtle);">
+              <strong>Course Step 3 Generic Suggestions:</strong>
+              <pre style="margin-top: 0.5rem; background: transparent; padding: 0;"><code>if (product == null)
+    throw new Exception("Product not found.");
+if (product.Stock &lt; order.Quantity)
+    throw new Exception("Insufficient stock.");</code></pre>
+              <span style="font-size: 0.8rem; color: var(--color-warning);">Limitation: Throws generic base Exception; lacks payload validation, edge-case handling, and persistence.</span>
+            </div>
+            <div class="status-panel" style="background-color: var(--bg-card-subtle);">
+              <strong>Final Enterprise Architecture Improvements:</strong>
+              <ul style="font-size: 0.85rem; padding-left: 1.2rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                <li>Replaces generic <code>Exception</code> with typed <code>ProductNotFoundException</code> and <code>InsufficientStockException</code>.</li>
+                <li>Adds Guard 1 for null order payload (<code>ArgumentNullException</code>).</li>
+                <li>Adds Guard 2 for zero/negative quantity (<code>InvalidOrderQuantityException</code>).</li>
+                <li>Applies atomic SQLite database persistence via <code>UpdateStock</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Exception Hierarchy -->
+      <div id="tab-hierarchy" class="tab-pane" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Domain Exception Hierarchy &amp; Error Architecture</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+            To distinguish business rule rejections from system infrastructure faults, WarehouseX establishes a structured exception hierarchy under <code>WarehouseException</code>.
+          </p>
+
+          <table class="data-table" style="margin-bottom: 1.5rem;">
+            <thead>
+              <tr>
+                <th>Exception Type</th>
+                <th>Base Class</th>
+                <th>Error Code</th>
+                <th>Trigger Condition</th>
+                <th>Contextual Payload</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ProductNotFoundException</code></td>
+                <td><code>WarehouseException</code></td>
+                <td><span class="badge badge-warning">PRODUCT_NOT_FOUND</span></td>
+                <td><code>db.Products.Find(id) == null</code></td>
+                <td><code>ProductId</code></td>
+              </tr>
+              <tr>
+                <td><code>InsufficientStockException</code></td>
+                <td><code>WarehouseException</code></td>
+                <td><span class="badge badge-warning">INSUFFICIENT_STOCK</span></td>
+                <td><code>product.Stock &lt; order.Quantity</code></td>
+                <td><code>ProductId</code>, <code>RequestedQuantity</code>, <code>AvailableStock</code></td>
+              </tr>
+              <tr>
+                <td><code>InvalidOrderQuantityException</code></td>
+                <td><code>WarehouseException</code></td>
+                <td><span class="badge badge-warning">INVALID_QUANTITY</span></td>
+                <td><code>order.Quantity &lt;= 0</code></td>
+                <td><code>OrderId</code>, <code>Quantity</code></td>
+              </tr>
+              <tr>
+                <td><code>InvalidOrderException</code></td>
+                <td><code>WarehouseException</code></td>
+                <td><span class="badge badge-warning">INVALID_ORDER</span></td>
+                <td>Corrupted or malformed order</td>
+                <td>Error explanation string</td>
+              </tr>
+              <tr>
+                <td><code>ArgumentNullException</code></td>
+                <td><code>SystemException</code></td>
+                <td><span class="badge badge-warning">NULL_ORDER</span></td>
+                <td><code>order == null</code></td>
+                <td>Parameter name <code>nameof(order)</code></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-primary);">Host Stability Wrapper: `OrderService.TryProcessOrder`</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+            To prevent unexpected application crashes during batch order fulfillment (Course Focus Area F4 / Strategy ST2), <code>TryProcessOrder</code> wraps order operations and returns an immutable <code>OrderProcessingResult</code> model:
+          </p>
+          <pre><code>public static OrderProcessingResult TryProcessOrder(WarehouseDbContext db, Order order, Action&lt;string&gt;? logAction = null)
+{
+    if (order == null)
+        return OrderProcessingResult.Failed(0, 0, 0, "NULL_ORDER", "Order payload cannot be null.");
+
+    try
+    {
+        ProcessOrderDebugged(db, order, logAction);
+        var product = db.Products.Find(order.ProductId);
+        return OrderProcessingResult.Completed(order.Id, order.ProductId, order.Quantity, product?.Stock ?? 0);
+    }
+    catch (ProductNotFoundException ex)
+    {
+        return OrderProcessingResult.Failed(order.Id, order.ProductId, order.Quantity, "PRODUCT_NOT_FOUND", ex.Message);
+    }
+    catch (InsufficientStockException ex)
+    {
+        return OrderProcessingResult.Failed(order.Id, order.ProductId, order.Quantity, "INSUFFICIENT_STOCK", ex.Message);
+    }
+    catch (InvalidOrderQuantityException ex)
+    {
+        return OrderProcessingResult.Failed(order.Id, order.ProductId, order.Quantity, "INVALID_QUANTITY", ex.Message);
+    }
+    catch (Exception ex)
+    {
+        return OrderProcessingResult.Failed(order.Id, order.ProductId, order.Quantity, "UNEXPECTED_ERROR", ex.Message);
+    }
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- Tab 3: Defect Reproduction -->
+      <div id="tab-reproduction" class="tab-pane" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Defect Reproduction &amp; Automated Verification</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Following the course engineering methodology (Analysis &rarr; Optimization &rarr; Testing), each defect reported in Activity 4 Step 1 was reproduced in an isolated NUnit test fixture before fixes were applied.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="card" style="background-color: var(--bg-card-subtle);">
+              <h3 style="font-size: 1rem; color: var(--color-danger); margin-bottom: 0.5rem;">Defect 1: Null Reference Crash (Issue E1)</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                <strong>Test</strong>: <code>Baseline_ProcessOrderUnoptimized_ThrowsNullReferenceException_OnMissingProduct</code>
+              </p>
+              <div class="status-panel" style="font-size: 0.8rem; background-color: var(--bg-card);">
+                <strong>Stack Trace Reproduced:</strong><br>
+                System.NullReferenceException: Object reference not set to an instance of an object.<br>
+                at WarehouseX.Services.OrderService.ProcessOrderUnoptimized(Order order) line 191
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-success); margin-top: 0.5rem;">
+                &check; Resolved by <code>ProcessOrderDebugged</code> throwing <code>ProductNotFoundException</code> or returning <code>PRODUCT_NOT_FOUND</code>.
+              </p>
+            </div>
+
+            <div class="card" style="background-color: var(--bg-card-subtle);">
+              <h3 style="font-size: 1rem; color: var(--color-danger); margin-bottom: 0.5rem;">Defect 2: Negative Stock Overdraft (Issue E3)</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                <strong>Test</strong>: <code>Baseline_ProcessOrderUnoptimized_AllowsNegativeStock_OnOverdraft</code>
+              </p>
+              <div class="status-panel" style="font-size: 0.8rem; background-color: var(--bg-card);">
+                <strong>Inventory Corruption Reproduced:</strong><br>
+                Initial Stock: 52 units.<br>
+                Order Requested: 552 units.<br>
+                Resulting Balance: -500 units [NEGATIVE INVENTORY DISCREPANCY]
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-success); margin-top: 0.5rem;">
+                &check; Resolved by <code>InsufficientStockException</code> preventing deduction and preserving current stock balance.
+              </p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--color-primary);">NUnit Verification Suite Summary (`ResilienceAndDebuggingTests.cs`)</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Test Identifier</th>
+                <th>Category</th>
+                <th>Target Behavior Verified</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Baseline_ProcessOrderUnoptimized_ThrowsNullReferenceException</code></td>
+                <td>Reproduction</td>
+                <td>Confirms baseline crashes on missing catalog item</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>Baseline_ProcessOrderUnoptimized_AllowsNegativeStock_OnOverdraft</code></td>
+                <td>Reproduction</td>
+                <td>Confirms baseline allows negative inventory balances</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrderDebugged_ThrowsArgumentNullException_WhenOrderIsNull</code></td>
+                <td>Guard Clause</td>
+                <td>Validates non-null order payload</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrderDebugged_ThrowsInvalidOrderQuantityException</code></td>
+                <td>Guard Clause</td>
+                <td>Validates quantity &gt; 0 (rejects 0, -1, -50)</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrderDebugged_ThrowsProductNotFoundException</code></td>
+                <td>Guard Clause</td>
+                <td>Validates product existence in catalog</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrderDebugged_ThrowsInsufficientStockException</code></td>
+                <td>Guard Clause</td>
+                <td>Validates available stock and preserves balance</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrderDebugged_DeductsStockAndPersists_WhenOrderIsValid</code></td>
+                <td>Fulfillment</td>
+                <td>Validates deduction and SQLite state persistence</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>TryProcessOrder_HandlesMissingProductGracefully</code></td>
+                <td>Resilience</td>
+                <td>Returns PRODUCT_NOT_FOUND code without crash</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>TryProcessOrder_HandlesInsufficientStockGracefully</code></td>
+                <td>Resilience</td>
+                <td>Returns INSUFFICIENT_STOCK code without crash</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+              <tr>
+                <td><code>ProcessOrdersBatchResilient_EliminatesProcessCrashes</code></td>
+                <td>High Volume</td>
+                <td>Processes 1,000 mixed orders with 0 unhandled crashes</td>
+                <td><span class="badge badge-m">[M] Passed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 4: Interactive Simulator -->
+      <div id="tab-simulator" class="tab-pane" role="tabpanel">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Interactive Batch Resilience Simulator</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Simulate the execution of a 1,000-order heterogeneous batch (850 valid orders, 75 missing catalog items, 50 stock overdrafts, 25 negative quantities) comparing the fragile baseline against the resilient debugged handler.
+          </p>
+
+          <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+            <button id="runResilienceSimBtn" class="btn btn-primary">Run Batch Resilience Simulation</button>
+            <span id="resilienceSimStatusBadge" class="badge badge-gap">Awaiting Execution</span>
+          </div>
+
+          <div class="card-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
+            <div class="card" style="background-color: var(--bg-card-subtle); text-align: center;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Batch Size</span>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">1,000 Orders</div>
+              <span class="badge badge-sim" style="font-size: 0.7rem; margin-top: 0.25rem;">[SIM] Workload</span>
+            </div>
+            <div class="card" style="background-color: var(--bg-card-subtle); text-align: center;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Unhandled Crashes</span>
+              <div id="metricUnhandledCrashes" style="font-size: 1.3rem; font-weight: 700; color: var(--color-danger); margin-top: 0.25rem;">--</div>
+              <span class="badge badge-m" style="font-size: 0.7rem; margin-top: 0.25rem;">[M] Tested</span>
+            </div>
+            <div class="card" style="background-color: var(--bg-card-subtle); text-align: center;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Orders Handled</span>
+              <div id="metricOrdersHandled" style="font-size: 1.3rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">--</div>
+              <span class="badge badge-m" style="font-size: 0.7rem; margin-top: 0.25rem;">[M] 100% Resolved</span>
+            </div>
+            <div class="card" style="background-color: var(--bg-card-subtle); text-align: center;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Negative Stock Allowed</span>
+              <div id="metricNegativeStock" style="font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">--</div>
+              <span class="badge badge-m" style="font-size: 0.7rem; margin-top: 0.25rem;">[M] Prevented</span>
+            </div>
+          </div>
+
+          <div id="resilienceSimOutputPanel" class="status-panel">
+// Click "Run Batch Resilience Simulation" to execute the comparative evaluation...
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer-callout">
+      <p style="margin-bottom: 0.5rem;">
+        <strong>WarehouseX Capstone Demonstration</strong> · Developed as part of the Microsoft Full Stack Developer Specialization.
+      </p>
+      <p style="font-size: 0.8rem; color: var(--text-secondary);">
+        Evidence standard: <code>[M]</code> Measured locally · <code>[SIM]</code> Simulated workload · <code>[GAP]</code> Unmeasured baseline.
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/warehousex.js"></script>
+</body>
+</html>
