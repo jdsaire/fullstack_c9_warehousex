@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="container">
     <header>
       <div class="header-top">
@@ -23,12 +24,12 @@
     <nav class="nav-bar" aria-label="Main Navigation">
       <a href="index.html" class="nav-link active">Hub Overview</a>
       <a href="activity1-strategy.html" class="nav-link">Activity 1 · Strategic Plan</a>
-      <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 2">Activity 2 · SQL Query</span>
+      <a href="activity2-sql.html" class="nav-link">Activity 2 · SQL Query</a>
       <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 3">Activity 3 · Application Code</span>
       <span class="nav-link" style="opacity: 0.6; cursor: not-allowed;" title="Scheduled for Activity 4">Activity 4 · Debugging & Resilience</span>
     </nav>
 
-    <main>
+    <main id="main-content">
       <section style="margin-bottom: 2.5rem;">
         <h2 style="font-size: 1.35rem; margin-bottom: 0.75rem;">Platform Optimization Milestone Map</h2>
         <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
@@ -48,12 +49,12 @@
 
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-              <span class="badge badge-gap">Activity 2</span>
-              <span class="badge badge-gap">Scheduled</span>
+              <span class="badge badge-primary">Activity 2</span>
+              <span class="badge badge-m">Delivered</span>
             </div>
             <h3>SQL Query Optimization</h3>
-            <p>Execution plan analysis via native SQLite EXPLAIN QUERY PLAN and composite index optimization.</p>
-            <button class="btn btn-secondary" style="width: 100%;" disabled>Pending A2</button>
+            <p>Execution plan analysis via native SQLite EXPLAIN QUERY PLAN, covering indexes, and driving-table restructuring.</p>
+            <a href="activity2-sql.html" class="btn btn-primary" style="width: 100%;">View SQL Optimization</a>
           </div>
 
           <div class="card">
@@ -96,17 +97,17 @@
               <td><code>M-SQL-01</code></td>
               <td>SQL Queries</td>
               <td>Query Execution Latency</td>
-              <td><span class="badge badge-gap">[GAP] Unmeasured</span></td>
+              <td><span class="badge badge-sim">[SIM] 1.82 ms (Unindexed)</span></td>
               <td>&ge; 50% Latency Reduction</td>
-              <td><span class="badge badge-sim">[SIM] Synthetic</span></td>
+              <td><span class="badge badge-m">[M] 0.64 ms (-64.8%)</span></td>
             </tr>
             <tr>
               <td><code>M-SQL-02</code></td>
               <td>SQL Queries</td>
               <td>Table Scan Operations</td>
-              <td>Full Table Scan (SCAN TABLE)</td>
-              <td>Index Seek (SEARCH TABLE)</td>
-              <td><span class="badge badge-m">[M] Verified</span></td>
+              <td><span class="badge badge-sim">[SIM] SCAN Orders (Table Scan)</span></td>
+              <td>Covering Index Seeks</td>
+              <td><span class="badge badge-m">[M] 0 Table Reads</span></td>
             </tr>
             <tr>
               <td><code>M-APP-01</code></td>
@@ -148,7 +149,7 @@
         <strong>WarehouseX Capstone Demonstration</strong> · Developed as part of the Microsoft Full Stack Developer Specialization.
       </p>
       <p style="font-size: 0.8rem; color: var(--text-secondary);">
-        Evidence standard: <code>[M]</code> Measured locally · <code>[SIM]</code> Simulated workload · <code>[GAP]</code> Unmeasured baseline. AI disclosure: Developed with AI assistance using the AI assistant as the AI environment.
+        Evidence standard: <code>[M]</code> Measured locally · <code>[SIM]</code> Simulated workload · <code>[GAP]</code> Unmeasured baseline.
       </p>
     </footer>
   </div>

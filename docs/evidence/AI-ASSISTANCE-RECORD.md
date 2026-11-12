@@ -29,3 +29,12 @@ Each entry documents an interaction with the AI environment during development, 
 - **Assistance Provided**: The AI environment recommended creating domain models `Order` and `Product` with explicit property-to-column mappings to bridge the naming discrepancy between SQL (`ProductID`, `ProductName`) and C# (`Id`, `Name`, `Stock`), and implementing `WarehouseDbContext.Products` with `Find(id)` and `FirstOrDefault(predicate)` accessors.
 - **Evaluation & Action**: Accepted the recommendation in full. Implemented `WarehouseDbContext.cs` and verified that both baseline snippets compile and execute verbatim against in-memory SQLite.
 - **Resulting Artifacts**: `src/WarehouseX/`, `tests/WarehouseX.Tests/`.
+
+### Entry AI-03 · Activity 2: SQL Query Optimization & Covering Indexes
+- **Date**: 2026-11-11
+- **Activity**: Activity 2 · Query Optimization with SQL Execution Plans
+- **Inquiry / Prompt**: Requested execution plan analysis of the unoptimized sales summary query and recommendations for covering indexes and query restructuring techniques to eliminate full table scans while guaranteeing 100% result equivalence.
+- **Assistance Provided**: The AI environment analyzed the SQLite query plan, identifying bottlenecks in the full table scan of `Orders` and post-join `Category` evaluation. It proposed a composite covering index `idx_products_category_covering` on `Products(Category, ProductID, ProductName)`, a covering index `idx_orders_product_qty` on `Orders(ProductID, Quantity)`, and inverting the driving table to filter `Products` prior to joining `Orders`.
+- **Evaluation & Action**: Evaluated the proposal against the capstone requirement for a single revised query (Submission Item S2). Implemented the revised query with driving-table restructuring and composite covering indexes, verified that result sets match the baseline 100% across all catalog items, and confirmed execution plans eliminate all table heap scans.
+- **Resulting Artifacts**: `sql/baseline_query.sql`, `sql/optimized_query.sql`, `sql/indexes.sql`, `sql/explain_query_plans.sql`, `activity2-sql.html`, `tests/WarehouseX.Tests/TypeMappingAndQueryTests.cs`.
+

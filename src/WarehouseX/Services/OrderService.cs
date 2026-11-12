@@ -41,6 +41,74 @@ public class OrderService
     }
 
     /// <summary>
+    /// Executes the single revised optimized SQL query (Submission Item S2 / Criterion C2).
+    /// Optimization: Inverted driving table (Products -> Orders) and composite covering indexes.
+    /// </summary>
+    public static List<(string ProductName, int TotalSold)> ExecuteOptimizedSalesSummaryQuery(WarehouseDbContext db)
+    {
+        var results = new List<(string ProductName, int TotalSold)>();
+        var conn = db.GetOpenConnection();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+            SELECT p.ProductName, SUM(o.Quantity) AS TotalSold
+            FROM Products p
+            JOIN Orders o ON p.ProductID = o.ProductID
+            WHERE p.Category = 'Electronics'
+            GROUP BY p.ProductID, p.ProductName
+            ORDER BY TotalSold DESC;
+        ";
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            string name = reader.GetString(0);
+            int total = reader.GetInt32(1);
+            results.Add((name, total));
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// Executes a benchmark comparison between the unindexed baseline and the covering-index optimized query.
+    /// Includes warmup iterations to eliminate JIT compilation overhead.
+    /// </summary>
+    public static (double BaselineMs, double OptimizedMs, double ReductionPercent) BenchmarkQueries(WarehouseDbContext db, int iterations = 50)
+    {
+        // 1. Measure unindexed baseline
+        db.DropIndexes();
+        for (int w = 0; w < 5; w++)
+        {
+            ExecuteSalesSummaryQuery(db);
+        }
+
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        for (int i = 0; i < iterations; i++)
+        {
+            ExecuteSalesSummaryQuery(db);
+        }
+        sw.Stop();
+        double baselineMs = sw.Elapsed.TotalMilliseconds / iterations;
+
+        // 2. Measure optimized query with composite covering indexes
+        db.CreateIndexes();
+        for (int w = 0; w < 5; w++)
+        {
+            ExecuteOptimizedSalesSummaryQuery(db);
+        }
+
+        sw.Restart();
+        for (int i = 0; i < iterations; i++)
+        {
+            ExecuteOptimizedSalesSummaryQuery(db);
+        }
+        sw.Stop();
+        double optMs = sw.Elapsed.TotalMilliseconds / iterations;
+
+        double reduction = baselineMs > 0 ? ((baselineMs - optMs) / baselineMs) * 100.0 : 0.0;
+        return (baselineMs, optMs, reduction);
+    }
+
+    /// <summary>
     /// Baseline loop processing reproducing the course snippet from Activity 3 Step 2.
     /// Exhibits the N+1 database query pattern.
     /// </summary>

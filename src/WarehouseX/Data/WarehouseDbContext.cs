@@ -73,7 +73,7 @@ public class WarehouseDbContext : IDisposable
         var conn = GetOpenConnection();
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-            CREATE INDEX IF NOT EXISTS idx_products_category ON Products(Category, ProductID);
+            CREATE INDEX IF NOT EXISTS idx_products_category_covering ON Products(Category, ProductID, ProductName);
             CREATE INDEX IF NOT EXISTS idx_orders_product_qty ON Orders(ProductID, Quantity);
         ";
         cmd.ExecuteNonQuery();
@@ -85,6 +85,7 @@ public class WarehouseDbContext : IDisposable
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
             DROP INDEX IF EXISTS idx_products_category;
+            DROP INDEX IF EXISTS idx_products_category_covering;
             DROP INDEX IF EXISTS idx_orders_product_qty;
         ";
         cmd.ExecuteNonQuery();

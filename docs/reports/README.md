@@ -17,7 +17,7 @@ In alignment with repository engineering standards:
 
 | Activity ID | Milestone Title | Code Status | Pull Request | Author | Date | Report Link |
 |---|---|---|---|---|---|---|
-| **C9-ACT1** | Developing a Strategic Plan for Performance Optimization | Completed on `a1-strategy` | Active PR | Juan Diego S. | Nov 2026 | [ACTIVITY-1-COMPLETION-REPORT.md](ACTIVITY-1-COMPLETION-REPORT.md) |
-| **C9-ACT2** | Query Optimization | Scheduled | Pending A2 | Juan Diego S. | Pending | Pending |
+| **C9-ACT1** | Developing a Strategic Plan for Performance Optimization | Completed on `a1-strategy` | Merged PR #1 | Juan Diego S. | Nov 2026 | [ACTIVITY-1-COMPLETION-REPORT.md](ACTIVITY-1-COMPLETION-REPORT.md) |
+| **C9-ACT2** | Query Optimization with SQL Execution Plans | Completed on `a2-sql` | Active PR | Juan Diego S. | Nov 2026 | [ACTIVITY-2-COMPLETION-REPORT.md](ACTIVITY-2-COMPLETION-REPORT.md) |
 | **C9-ACT3** | Application Code Optimization | Scheduled | Pending A3 | Juan Diego S. | Pending | Pending |
 | **C9-ACT4** | Debugging Application Code | Scheduled | Pending A4 | Juan Diego S. | Pending | Pending |
