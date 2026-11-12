@@ -179,6 +179,63 @@ public class TypeMappingAndQueryTests
     }
 
     [Test]
+    public void ProcessOrdersLoopOptimized_ReducesDatabaseQueriesToSingleOperation()
+    {
+        var orders = _db.Orders.ToList(); // 200 orders seeded
+        var loggedLines = new List<string>();
+
+        _db.QueryCounter = 0;
+        OrderService.ProcessOrdersLoopOptimized(_db, orders, line => loggedLines.Add(line));
+
+        Assert.That(loggedLines.Count, Is.EqualTo(200));
+        // Single query to populate dictionary replaces N sequential queries (O(1) query complexity)
+        Assert.That(_db.QueryCounter, Is.EqualTo(1), "Optimized loop must execute exactly 1 database query");
+    }
+
+    [Test]
+    public void ProcessOrdersLoopOptimized_GeneratesVerbatimOutputMatchingBaseline()
+    {
+        var orders = _db.Orders.ToList();
+        var baselineLines = new List<string>();
+        var optimizedLines = new List<string>();
+
+        OrderService.ProcessOrdersLoopUnoptimized(_db, orders, line => baselineLines.Add(line));
+        OrderService.ProcessOrdersLoopOptimized(_db, orders, line => optimizedLines.Add(line));
+
+        Assert.That(optimizedLines.Count, Is.EqualTo(baselineLines.Count), "Output line counts must match exactly");
+        Assert.That(optimizedLines, Is.EqualTo(baselineLines), "Formatted output strings must match verbatim");
+    }
+
+    [Test]
+    public void ProcessOrdersLoopOptimized_AchievesSignificantLatencyReduction()
+    {
+        using var largeDb = new WarehouseDbContext("Data Source=:memory:");
+        largeDb.SeedData(productCount: 200, orderCount: 2000, randomSeed: 1234);
+        var orders = largeDb.Orders.ToList();
+
+        var (baseMs, optMs, reduction, baseQ, optQ) = OrderService.BenchmarkLoopProcessing(largeDb, orders, iterations: 5);
+
+        Assert.That(baseQ, Is.GreaterThanOrEqualTo(2000), "Baseline query count must reflect N queries");
+        Assert.That(optQ, Is.EqualTo(1), "Optimized query count must be 1");
+        Assert.That(optMs, Is.LessThan(baseMs), "Optimized loop must be faster than baseline");
+        Assert.That(reduction, Is.GreaterThanOrEqualTo(50.0), "Loop latency reduction must exceed 50%");
+    }
+
+    [Test]
+    public void ProcessOrdersLoopOptimized_HandlesMissingProductGracefully()
+    {
+        var missingProductOrders = new List<Order>
+        {
+            new Order(99, 9999, 3) // ProductID 9999 does not exist
+        };
+        var loggedLines = new List<string>();
+
+        Assert.DoesNotThrow(() => OrderService.ProcessOrdersLoopOptimized(_db, missingProductOrders, l => loggedLines.Add(l)));
+        Assert.That(loggedLines.Count, Is.EqualTo(1));
+        Assert.That(loggedLines[0], Is.EqualTo("Order 99:  - 3"));
+    }
+
+    [Test]
     public void ProcessOrderUnoptimized_ExecutesVerbatimActivity4Logic()
     {
         var validOrder = new Order(1, 1, 5);
