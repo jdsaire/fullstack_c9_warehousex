@@ -270,6 +270,25 @@ public class WarehouseDbContext : IDisposable
             return dict;
         }
 
+        /// <summary>
+        /// Updates the inventory stock level for a product in the SQLite database.
+        /// Synchronizes in-memory entity changes with persistent storage.
+        /// </summary>
+        public void UpdateStock(int productId, int newStock)
+        {
+            _context.QueryCounter++;
+            var conn = _context.GetOpenConnection();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                UPDATE Products
+                SET Stock = @stock
+                WHERE ProductID = @id;
+            ";
+            cmd.Parameters.AddWithValue("@stock", newStock);
+            cmd.Parameters.AddWithValue("@id", productId);
+            cmd.ExecuteNonQuery();
+        }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
