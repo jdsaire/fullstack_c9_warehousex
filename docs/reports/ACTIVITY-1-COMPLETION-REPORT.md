@@ -76,7 +76,7 @@ The table below quotes the Course 9 Capstone rubric criteria from the project br
 
 Measured NUnit test execution output (`[M]`):
 ```text
-Test run for /home/antigravity/jdsaire/fullstack_c9_warehousex/tests/WarehouseX.Tests/bin/Debug/net8.0/WarehouseX.Tests.dll (.NETCoreApp,Version=v8.0)
+Test run for /home/ai-env/jdsaire/fullstack_c9_warehousex/tests/WarehouseX.Tests/bin/Debug/net8.0/WarehouseX.Tests.dll (.NETCoreApp,Version=v8.0)
 VSTest version 17.11.2 (x64)
 
 NUnit Adapter 4.6.0.0: Test execution started

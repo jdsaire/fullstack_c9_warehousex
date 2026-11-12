@@ -43,7 +43,7 @@ Define explicit, measurable metrics for every focus area. To uphold the project 
 | **Debugging** | `M-DBG-02` | Edge-Case Validation Coverage | Verified Failure Modes | 0 Validation Guards | 100% Guard Coverage (NUnit Verified) | Planned `[SIM]` |
 
 ### Phase P3 · AI Tool Selection & Operating Role
-Google Antigravity serves as the AI development environment across all phases. In accordance with Capstone Rulings D1 and D4, Google Antigravity assists by:
+the AI assistant serves as the AI development environment across all phases. In accordance with Capstone Rulings D1 and D4, the AI assistant assists by:
 - Analyzing baseline execution plans to identify unindexed joins and scanning bottlenecks.
 - Proposing memory-efficient C# refactorings (such as dictionary lookups and batched LINQ expressions).
 - Generating defensive guard clauses and identifying overlooked edge cases.
@@ -101,7 +101,7 @@ Planned assistance is logged and subsequently reconciled against the actual chro
   - Insufficient available stock for high-volume orders.
   - Null order payloads or corrupted order identifiers.
 - **R-DBG-3 (AI-Assisted Debugging Methodology)**:
-  - Leveraging Google Antigravity to analyze error stack traces, identify unhandled exception points, and propose guard clause patterns.
+  - Leveraging the AI assistant to analyze error stack traces, identify unhandled exception points, and propose guard clause patterns.
   - Formulating structured custom exceptions (`ProductNotFoundException`, `InsufficientStockException`, `InvalidOrderQuantityException`) to distinguish business validation errors from runtime faults.
 - **R-DBG-4 (Comprehensive Validation Methods)**:
   - Developing automated NUnit unit test fixtures that systematically test invalid inputs, non-existent products, zero quantities, and overdraft attempts.
@@ -127,8 +127,8 @@ Planned assistance is logged and subsequently reconciled against the actual chro
 2. **Application Layer**: In-memory caching and batch dictionary lookups to eliminate $N+1$ query round-trips; batched transaction execution.
 3. **Resilience Layer**: Defensive guard validation, custom domain exception hierarchies, and boundary checking for nulls and stock limits.
 
-### Z2: Where and how will Google Antigravity assist?
-Google Antigravity serves as an AI development assistant across all activities:
+### Z2: Where and how will the AI assistant assist?
+the AI assistant serves as an AI development assistant across all activities:
 - **Activity 1**: Assisting in structuring the comprehensive strategic plan, defining metrics frameworks, and scaffolding the test environment.
 - **Activity 2**: Analyzing `EXPLAIN QUERY PLAN` output, evaluating index candidates, and verifying SQL rewrite options.
 - **Activity 3**: Proposing LINQ optimizations and dictionary caching patterns to remove loop bottlenecks.
