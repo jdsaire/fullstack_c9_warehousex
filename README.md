@@ -29,20 +29,32 @@ Warehouse X operates an order fulfillment platform managing high-throughput orde
 │   │   └── AI-ASSISTANCE-RECORD.md     # Chronological development assistance log
 │   └── reports/
 │       ├── README.md                   # Index of milestone completion reports
-│       └── ACTIVITY-1-COMPLETION-REPORT.md # Activity 1 completion report (Rubric C1)
+│       ├── ACTIVITY-1-COMPLETION-REPORT.md # Activity 1 report (Rubric C1)
+│       ├── ACTIVITY-2-COMPLETION-REPORT.md # Activity 2 report (Rubric C2)
+│       ├── ACTIVITY-3-COMPLETION-REPORT.md # Activity 3 report (Rubric C3)
+│       └── ACTIVITY-4-COMPLETION-REPORT.md # Activity 4 report (Rubric C4)
+├── sql/
+│   ├── baseline_query.sql              # Activity 2 unoptimized query
+│   ├── optimized_query.sql             # Submission Item S2 optimized SQL query
+│   ├── indexes.sql                     # Composite covering index definitions
+│   └── explain_query_plans.sql         # Native SQLite EXPLAIN QUERY PLAN analysis
 ├── src/
 │   └── WarehouseX/
 │       ├── Data/                       # WarehouseDbContext, SQLite schema, synthetic seed generator
-│       ├── Models/                     # Domain entities (Order, Product)
+│       ├── Exceptions/                 # Domain exception hierarchy (WarehouseException, etc.)
+│       ├── Models/                     # Domain entities (Order, Product, OrderProcessingResult)
 │       └── Services/                   # Query execution, loop processing, and order pipelines
 ├── tests/
-│   └── WarehouseX.Tests/               # NUnit unit and integration test fixtures
+│   └── WarehouseX.Tests/               # NUnit unit and integration test fixtures (34 tests)
 ├── css/
 │   └── styles.css                      # Accessible presentation styles
 ├── js/
 │   └── warehousex.js                   # Interactive demonstration client logic
 ├── index.html                          # Interactive demonstration navigation hub
 ├── activity1-strategy.html             # Activity 1 strategic optimization viewer
+├── activity2-sql.html                  # Activity 2 SQL query optimization viewer
+├── activity3-code.html                 # Activity 3 application code refactoring viewer
+├── activity4-debug.html                # Activity 4 debugging & resilience viewer
 ├── WarehouseX.sln                      # .NET 8 solution root
 └── .gitignore                          # Build, test, and runtime artifact exclusions
 ```
