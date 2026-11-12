@@ -69,16 +69,16 @@ public class OrderService
     }
 
     /// <summary>
-    /// Executes a benchmark comparison between the baseline and optimized queries.
+    /// Executes a benchmark comparison between the unindexed baseline and the covering-index optimized query.
     /// Includes warmup iterations to eliminate JIT compilation overhead.
     /// </summary>
     public static (double BaselineMs, double OptimizedMs, double ReductionPercent) BenchmarkQueries(WarehouseDbContext db, int iterations = 50)
     {
-        // Warmup JIT and database context
+        // 1. Measure unindexed baseline
+        db.DropIndexes();
         for (int w = 0; w < 5; w++)
         {
             ExecuteSalesSummaryQuery(db);
-            ExecuteOptimizedSalesSummaryQuery(db);
         }
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -88,6 +88,13 @@ public class OrderService
         }
         sw.Stop();
         double baselineMs = sw.Elapsed.TotalMilliseconds / iterations;
+
+        // 2. Measure optimized query with composite covering indexes
+        db.CreateIndexes();
+        for (int w = 0; w < 5; w++)
+        {
+            ExecuteOptimizedSalesSummaryQuery(db);
+        }
 
         sw.Restart();
         for (int i = 0; i < iterations; i++)
