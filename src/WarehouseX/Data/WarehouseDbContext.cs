@@ -244,6 +244,32 @@ public class WarehouseDbContext : IDisposable
             return list.GetEnumerator();
         }
 
+        /// <summary>
+        /// Materializes all products into an in-memory dictionary keyed by ProductID in a single query.
+        /// Enables O(1) in-memory lookups to eliminate N+1 query loops.
+        /// </summary>
+        public Dictionary<int, Product> AsDictionary()
+        {
+            _context.QueryCounter++;
+            var conn = _context.GetOpenConnection();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT ProductID, ProductName, Category, Stock FROM Products;";
+
+            using var reader = cmd.ExecuteReader();
+            var dict = new Dictionary<int, Product>();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                dict[id] = new Product(
+                    id,
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetInt32(3)
+                );
+            }
+            return dict;
+        }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
